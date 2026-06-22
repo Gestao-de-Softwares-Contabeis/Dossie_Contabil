@@ -1,0 +1,42 @@
+# ============================================================================ #
+# CORE DEPENDENCIES                                                            #
+# ============================================================================ #
+
+# Web Framework
+streamlit==1.28.1
+
+# Document Generation & Manipulation
+docxtpl==0.16.6
+python-docx==0.8.11
+
+# PDF Processing
+PyMuPDF==1.23.8
+
+# Formatting & Markdown Conversion
+pypandoc==1.11
+
+# HTTP Requests (n8n integration)
+requests==2.31.0
+
+# ============================================================================ #
+# DEVELOPMENT & TESTING                                                       #
+# ============================================================================ #
+
+# Testing
+pytest==7.4.3
+pytest-cov==4.1.0
+pytest-mock==3.12.0
+
+# Code Quality
+black==23.12.1
+ruff==0.1.8
+mypy==1.7.1
+
+# Logging
+loguru==0.7.2
+
+# ============================================================================ #
+# OPTIONAL: Environment Management                                           #
+# ============================================================================ #
+
+# python-dotenv==1.0.0  # Uncomment if using .env files

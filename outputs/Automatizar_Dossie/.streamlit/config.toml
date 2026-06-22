@@ -1,0 +1,38 @@
+[theme]
+# Tema claro (light) como padrão
+primaryColor = "#1f77b4"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f0f2f6"
+textColor = "#262730"
+font = "sans serif"
+
+[client]
+# Mostrar menu de desenvolvimento (Edit, Rerun, etc)
+showErrorDetails = true
+toolbarMode = "developer"
+
+[logger]
+# Nível de logging
+level = "info"
+messageFormat = "%(asctime)s.%(msecs)03d [%(levelname)s] %(message)s"
+
+[server]
+# Máximo de uploads simultâneos
+maxUploadSize = 200
+
+# Puerto padrão (localhost)
+port = 8501
+
+# Correr scripts a cada atualização sem re-executar entradas do usuário
+runOnSave = false
+
+# Habilitar XSRF protection
+enableXsrfProtection = true
+
+[browser]
+# Não abrir browser automaticamente
+gatherUsageStats = false
+serverAddress = "localhost"
+
+[logger]
+level = "info"
