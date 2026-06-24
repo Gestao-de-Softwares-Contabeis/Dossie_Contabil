@@ -13,8 +13,8 @@ from docx import Document
 from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Inches
 
-from app.core.file_processor import FileProcessor
-from app.utils.logger import logger
+from core.file_processor import FileProcessor
+from utils.logger import logger
 from config.constants import (
     MESES_PT,
     PLACEHOLDER_DRE,

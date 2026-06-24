@@ -33,6 +33,3 @@ enableXsrfProtection = true
 # Não abrir browser automaticamente
 gatherUsageStats = false
 serverAddress = "localhost"
-
-[logger]
-level = "info"

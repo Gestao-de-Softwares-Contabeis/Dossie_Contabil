@@ -10,3 +10,4 @@ Dockerfile
 docker-compose.yml
 insere_mod.py
 merge_db.js
+venv

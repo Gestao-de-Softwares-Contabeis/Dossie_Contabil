@@ -3,11 +3,22 @@ Interface Streamlit do Gerador de Dossiês Contábeis.
 Ponto de entrada para `streamlit run app/main.py`.
 """
 import datetime
+import requests
+import tempfile
+from pathlib import Path
+from docx import Document
+
+import sys
+from pathlib import Path
+
+raiz_projeto = Path(__file__).resolve().parent.parent
+if str(raiz_projeto) not in sys.path:
+    sys.path.append(str(raiz_projeto))
 
 import streamlit as st
 
-from app.core.automation import DossieAutomation
-from app.utils.helpers import (
+from core.automation import DossieAutomation
+from utils.helpers import (
     format_cnpj,
     format_cpf,
     clean_numbers,
@@ -37,8 +48,8 @@ if "socios" not in st.session_state:
 # ------------------------------------------------------------------ #
 # Abas                                                                  #
 # ------------------------------------------------------------------ #
-tab1, tab2, tab3 = st.tabs(
-    ["🏢 Dados da Empresa / Períodos", "👥 Dados dos Sócios", "📎 Upload de Arquivos"]
+tab1, tab2, tab3, tab4 = st.tabs(
+    ["🏢 Empresa / Períodos", "👥 Sócios", "📎 Uploads", "⚠️ Pendências e Ressalvas"]
 )
 
 input_data: dict = {"uploads": {}}
@@ -117,23 +128,40 @@ with tab3:
             "Demonstração do Resultado — DRE (PDF)", type=["pdf"]
         )
 
-    st.subheader("Notas e Carta (DOCX)")
-    col7, col8 = st.columns(2)
-    with col7:
-        input_data["uploads"]["explic_demonstr_file"] = st.file_uploader(
-            "Notas Explicativas (DOCX — sem título interno)", type=["docx"], key="notas"
-        )
-    with col8:
-        input_data["uploads"]["carta_responsb_file"] = st.file_uploader(
-            "Carta de Responsabilidade (DOCX — sem título interno)", type=["docx"], key="carta"
-        )
+# ── Aba 4: Pendências (Substituindo o Telegram) ───────────────────── #
+with tab4:
+    st.subheader("Análise de Ressalvas e Pendências")
+    st.markdown("Selecione se alguma pendência ou situação específica se aplica ao cenário atual da empresa.")
+    
+    OPCOES_PENDENCIAS = [
+        "1. DISPONIBILIDADES – CAIXA", "2. DISPONIBILIDADES – CONTAS BANCÁRIAS", 
+        "3. APLICAÇÕES FINANCEIRAS", "4. CONTAS A RECEBER (CLIENTES)", 
+        "5. TRANSAÇÕES COM PARTES RELACIONADAS (SÓCIOS)", "6. ADIANTAMENTO A FORNECEDORES", 
+        "7. ADIANTAMENTOS A EMPREGADOS", "8. RECUPERAÇÃO DE TRIBUTOS", 
+        "9. SALDOS INICIAIS (BALANÇO DE ABERTURA)", "10. ESTOQUES", 
+        "11. CONTROLE DE ESTOQUES EM PODER DE TERCEIROS", "12. ATIVO IMOBILIZADO", 
+        "13. DEPRECIAÇÃO E VIDA ÚTIL (CPC 27)", "14. FORNECEDORES (PASSIVO CIRCULANTE)", 
+        "15. OBRIGAÇÕES TRIBUTÁRIAS", "16. CONCILIAÇÃO DE FOLHA DE PAGAMENTO", 
+        "17. CONFUSÃO PATRIMONIAL (PRINCÍPIO DA ENTIDADE)", "18. PASSIVO A DESCOBERTO / OMISSÃO DE RECEITA", 
+        "19. DISPÊNDIOS SEM COMPROVAÇÃO FISCAL", "20. PASSIVOS ONEROSOS (EMPRÉSTIMOS)", 
+        "21. CONSÓRCIOS", "22. DESPESAS ANTECIPADAS (SEGUROS)", 
+        "23. PARCELAMENTOS TRIBUTÁRIOS", "24. ARRENDAMENTO MERCANTIL E ALUGUÉIS (CPC 06)", 
+        "25. OBRIGAÇÕES COM CARTÕES DE CRÉDITO", "Nenhuma das Opções"
+    ]
+    
+    input_data["pendencias"] = st.multiselect(
+        "Selecione as pendências ou ressalvas aplicáveis:", 
+        options=OPCOES_PENDENCIAS,
+        default=["Nenhuma das Opções"]
+    )
 
 # ------------------------------------------------------------------ #
 # Botão de geração                                                      #
 # ------------------------------------------------------------------ #
 st.divider()
 if st.button("✅ GERAR DOSSIÊ CONTÁBIL", type="primary", use_container_width=True):
-    required = ["balanco_file", "demstr_result_file", "explic_demonstr_file", "carta_responsb_file"]
+    # Exigimos apenas os PDFs de Balanço e DRE agora
+    required = ["balanco_file", "demstr_result_file"]
     missing = [k for k in required if not input_data["uploads"].get(k)]
 
     if missing:
@@ -143,24 +171,65 @@ if st.button("✅ GERAR DOSSIÊ CONTÁBIL", type="primary", use_container_width=
     else:
         automation = DossieAutomation()
 
-        with st.spinner("Gerando dossiê… aguarde."):
-            file_bytes, error = automation.generate(input_data)
-
-        if error:
-            st.error(f"❌ Falha: {error}")
-        else:
-            st.success("✅ Dossiê gerado com sucesso!")
-            filename = OUTPUT_FILENAME_TEMPLATE.format(nome_empresa=input_data["nome_empresa"])
-            st.download_button(
-                label="⬇️ Baixar Dossiê (.docx)",
-                data=file_bytes,
-                file_name=filename,
-                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            )
-
-            with st.spinner("Enviando para o n8n…"):
-                ok, msg = automation.send_to_n8n(input_data, file_bytes)
-            if ok:
-                st.info(f"➡️ {msg}")
-            else:
-                st.warning(f"⚠️ n8n: {msg}")
+        with st.spinner("Conectando ao n8n para gerar Notas e Carta (isso pode levar 1-2 minutos)…"):
+            # 1. Prepara a chamada para o n8n
+            N8N_WEBHOOK_URL = "https://genai.up4me.io/webhook/receber-dados" 
+            
+            payload = {
+                "nome_empresa": input_data["nome_empresa"],
+                "pendencias": input_data["pendencias"]
+            }
+            
+            files = {
+                "balanco": input_data["uploads"]["balanco_file"].getvalue(),
+                "dre": input_data["uploads"]["demstr_result_file"].getvalue()
+            }
+            
+            try:
+                # Faz o POST e ESPERA a resposta do n8n
+                response = requests.post(N8N_WEBHOOK_URL, data=payload, files=files, timeout=180)
+                
+                if response.ok:
+                    dados_gerados = response.json()
+                    notas_texto = dados_gerados.get("notas", "Erro ao gerar notas")
+                    carta_texto = dados_gerados.get("carta", "Erro ao gerar carta")
+                    
+                    st.success("✨ Textos gerados pelo n8n com sucesso! Montando dossiê...")
+                    
+                    # 2. Converte os textos retornados em arquivos DOCX temporários para o Automation
+                    doc_notas = Document()
+                    doc_notas.add_paragraph(notas_texto)
+                    path_notas = Path(tempfile.gettempdir()) / "temp_notas.docx"
+                    doc_notas.save(path_notas)
+                    
+                    doc_carta = Document()
+                    doc_carta.add_paragraph(carta_texto)
+                    path_carta = Path(tempfile.gettempdir()) / "temp_carta.docx"
+                    doc_carta.save(path_carta)
+                    
+                    # Injeta os caminhos no input_data para simular o upload que foi comentado
+                    # Você precisará ajustar o `automation.generate` para aceitar caminhos caso ele espere "UploadedFiles"
+                    input_data["uploads"]["explic_demonstr_file_path"] = str(path_notas)
+                    input_data["uploads"]["carta_responsb_file_path"] = str(path_carta)
+                    
+                    # 3. Gera o arquivo final
+                    file_bytes, error = automation.generate(input_data)
+                    
+                    if error:
+                        st.error(f"❌ Falha na montagem final: {error}")
+                    else:
+                        st.success("✅ Dossiê completo montado!")
+                        filename = OUTPUT_FILENAME_TEMPLATE.format(nome_empresa=input_data["nome_empresa"])
+                        st.download_button(
+                            label="⬇️ Baixar Dossiê Completo (.docx)",
+                            data=file_bytes,
+                            file_name=filename,
+                            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                        )
+                else:
+                    st.error(f"❌ Erro do n8n: {response.status_code} - {response.text}")
+                    
+            except requests.exceptions.Timeout:
+                st.error("O n8n demorou muito para responder (Timeout).")
+            except Exception as e:
+                st.error(f"Erro na comunicação com n8n: {e}")

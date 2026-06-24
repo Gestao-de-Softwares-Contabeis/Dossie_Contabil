@@ -1,6 +1,3 @@
-"""
-Processamento de arquivos: PDF → imagens, DOCX → inserção de conteúdo.
-"""
 import os
 import tempfile
 from io import BytesIO
