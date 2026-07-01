@@ -175,14 +175,27 @@ if st.button("✅ GERAR DOSSIÊ CONTÁBIL", type="primary", use_container_width=
             # 1. Prepara a chamada para o n8n
             N8N_WEBHOOK_URL = "https://genai.up4me.io/webhook/receber-dados" 
             
+            # ATUALIZAÇÃO: Enviando todos os dados que o n8n espera ler no JSON do body
             payload = {
-                "nome_empresa": input_data["nome_empresa"],
-                "pendencias": input_data["pendencias"]
+                "nome_empresa": input_data.get("nome_empresa", ""),
+                "razao_social_empresa": input_data.get("razao_social_empresa", ""),
+                "cnpj_empresa": input_data.get("cnpj_empresa", ""),
+                "periodo_em_data": input_data.get("periodo_em_data", ""),
+                "periodo_anual": input_data.get("periodo_anual", ""),
+                "data_dem_encerradas": input_data.get("data_dem_encerradas", ""),
+                "pendencias": input_data.get("pendencias", []),
+                "socios": input_data.get("socios", [])
             }
             
+            # Extraímos os objetos de arquivo do Streamlit
+            balanco_file = input_data["uploads"]["balanco_file"]
+            dre_file = input_data["uploads"]["demstr_result_file"]
+
+            # Montamos o dicionário usando a estrutura de tupla exigida pelo requests:
+            # (nome_do_arquivo, conteudo_em_bytes, tipo_mime)
             files = {
-                "balanco": input_data["uploads"]["balanco_file"].getvalue(),
-                "dre": input_data["uploads"]["demstr_result_file"].getvalue()
+                "balanco": (balanco_file.name, balanco_file.getvalue(), balanco_file.type),
+                "dre": (dre_file.name, dre_file.getvalue(), dre_file.type)
             }
             
             try:
