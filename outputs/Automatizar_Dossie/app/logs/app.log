@@ -1,0 +1,12 @@
+2026-07-30 12:09:24.034 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/tmpy99wbdbr.pdf' convertido: 2 página(s).
+2026-07-30 12:09:24.365 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/tmpazmn2dew.pdf' convertido: 1 página(s).
+2026-07-30 12:09:24.369 | INFO     | core.file_processor:insert_pdf_at_placeholder:93 - Placeholder '[[DEMONSTR_RESULTADO]]' substituído por 1 imagem(ns).
+2026-07-30 12:09:24.380 | INFO     | core.file_processor:insert_docx_at_placeholder:118 - Placeholder '[[EXP_DEMONSTR]]' substituído com conteúdo de '/tmp/temp_notas.docx'.
+2026-07-30 12:09:24.393 | INFO     | core.file_processor:insert_docx_at_placeholder:118 - Placeholder '[[CARTA_RESP]]' substituído com conteúdo de '/tmp/temp_carta.docx'.
+2026-07-30 12:09:24.562 | INFO     | core.automation:generate:91 - Dossiê gerado com sucesso para 'TESTE do Nome'.
+2026-07-30 12:24:27.276 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/tmprxl0cpdg.pdf' convertido: 2 página(s).
+2026-07-30 12:24:27.621 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/tmpktst0o8j.pdf' convertido: 1 página(s).
+2026-07-30 12:24:27.625 | INFO     | core.file_processor:insert_pdf_at_placeholder:93 - Placeholder '[[DEMONSTR_RESULTADO]]' substituído por 1 imagem(ns).
+2026-07-30 12:24:27.638 | INFO     | core.file_processor:insert_docx_at_placeholder:118 - Placeholder '[[EXP_DEMONSTR]]' substituído com conteúdo de '/tmp/temp_notas.docx'.
+2026-07-30 12:24:27.651 | INFO     | core.file_processor:insert_docx_at_placeholder:118 - Placeholder '[[CARTA_RESP]]' substituído com conteúdo de '/tmp/temp_carta.docx'.
+2026-07-30 12:24:27.819 | INFO     | core.automation:generate:91 - Dossiê gerado com sucesso para 'TESTE do Nome'.

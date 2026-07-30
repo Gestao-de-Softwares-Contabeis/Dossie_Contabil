@@ -9,7 +9,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Caminhos principais
-TEMPLATE_PATH = BASE_DIR / "template_base_ofc.docx"
+TEMPLATE_PATH = BASE_DIR / "files/template_base_ofc.docx"
 TEMP_DIR = Path(os.environ.get("TEMP_DIR", "/tmp"))
 
 # Integração n8n

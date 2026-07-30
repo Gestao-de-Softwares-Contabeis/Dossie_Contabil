@@ -22,4 +22,4 @@ UPLOAD_KEYS = {
 }
 
 # Nome do arquivo de saída
-OUTPUT_FILENAME_TEMPLATE = "Dossie_Contabil_{nome_empresa}.docx"
+OUTPUT_FILENAME_TEMPLATE = "{nome_empresa}_dossie.docx"

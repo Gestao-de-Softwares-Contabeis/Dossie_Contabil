@@ -16,7 +16,7 @@ class FileProcessor:
     """Responsável por conversão e inserção de arquivos no documento final."""
 
     # ------------------------------------------------------------------ #
-    # Validação                                                             #
+    # Validação                                                          #
     # ------------------------------------------------------------------ #
 
     VALID_EXTENSIONS = {".docx", ".pdf", ".png", ".jpg", ".jpeg"}
@@ -26,7 +26,7 @@ class FileProcessor:
         return Path(filename).suffix.lower() in self.VALID_EXTENSIONS
 
     # ------------------------------------------------------------------ #
-    # PDF → imagens                                                         #
+    # PDF → imagens                                                      #
     # ------------------------------------------------------------------ #
 
     def pdf_to_images(self, pdf_path: str, max_pages: Optional[int] = None) -> list[bytes]:

@@ -1,0 +1,114 @@
+2026-07-29 15:02:35.160 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/tmpqs5_el8c.pdf' convertido: 2 página(s).
+2026-07-29 15:02:35.164 | ERROR    | core.automation:generate:100 - Erro inesperado durante geração do dossiê.
+Traceback (most recent call last):
+
+  File "/home/camposs/miniconda3/lib/python3.13/threading.py", line 1015, in _bootstrap
+    self._bootstrap_inner()
+    │    └ <function Thread._bootstrap_inner at 0x7676ebcb9940>
+    └ <Thread(ScriptRunner.scriptThread, started 130248607774400)>
+  File "/home/camposs/miniconda3/lib/python3.13/threading.py", line 1044, in _bootstrap_inner
+    self.run()
+    │    └ <function Thread.run at 0x7676ebcb96c0>
+    └ <Thread(ScriptRunner.scriptThread, started 130248607774400)>
+  File "/home/camposs/miniconda3/lib/python3.13/threading.py", line 995, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {}
+    │    │        │    │        └ <Thread(ScriptRunner.scriptThread, started 130248607774400)>
+    │    │        │    └ ()
+    │    │        └ <Thread(ScriptRunner.scriptThread, started 130248607774400)>
+    │    └ <bound method ScriptRunner._run_script_thread of ScriptRunner(_session_id='f9d825aa-23ce-4dbb-8d2b-70373904d26d', _main_scrip...
+    └ <Thread(ScriptRunner.scriptThread, started 130248607774400)>
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/venv/lib/python3.13/site-packages/streamlit/runtime/scriptrunner/script_runner.py", line 419, in _run_script_thread
+    self._run_script(request.rerun_data)
+    │    │           │       └ <property object at 0x7676ea9ca200>
+    │    │           └ ScriptRequest(type=<ScriptRequestType.RERUN: 'RERUN'>, _rerun_data=RerunData(widget_states=widgets {
+    │    │               id: "$$ID-b4ddf3bdcbc7...
+    │    └ <function ScriptRunner._run_script at 0x7676ea66be20>
+    └ ScriptRunner(_session_id='f9d825aa-23ce-4dbb-8d2b-70373904d26d', _main_script_path='/home/camposs/Desktop/estagio/Dossie_Cont...
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/venv/lib/python3.13/site-packages/streamlit/runtime/scriptrunner/script_runner.py", line 814, in _run_script
+    ) = exec_func_with_error_handling(code_to_exec, ctx)
+        │                             │             └ ScriptRunContext(session_id='f9d825aa-23ce-4dbb-8d2b-70373904d26d', _enqueue=<bound method ScriptRunner._enqueue_forward_msg ...
+        │                             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x7676c068e2a0>
+        └ <function exec_func_with_error_handling at 0x7676ea7e19e0>
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/venv/lib/python3.13/site-packages/streamlit/runtime/scriptrunner/exec_code.py", line 129, in exec_func_with_error_handling
+    result = func()
+             └ <function ScriptRunner._run_script.<locals>.code_to_exec at 0x7676c068e2a0>
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/venv/lib/python3.13/site-packages/streamlit/runtime/scriptrunner/script_runner.py", line 789, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+         │     │      └ <member '__dict__' of 'module' objects>
+         │     └ <module '__main__' from '/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/app/main.py'>
+         └ <code object <module> at 0x7676c88fa780, file "/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/app/m...
+
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/app/main.py", line 325, in <module>
+    file_bytes, error = automation.generate(input_data)
+                        │          │        └ {'uploads': {'balanco_file': UploadedFile(file_id='59ab6e5a-b1f2-4479-8fd5-549dd5aedb1b', name='515 - balanço patrimonial 202...
+                        │          └ <function DossieAutomation.generate at 0x7676d83dd580>
+                        └ <core.automation.DossieAutomation object at 0x7676c06a2030>
+
+> File "/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/app/core/automation.py", line 71, in generate
+    rendered_path = self._render_template(input_data, temp_paths)
+                    │    │                │           └ {'balanco_file': '/tmp/tmpqs5_el8c.pdf', 'demstr_result_file': '/tmp/tmpjiapdqgm.pdf', 'explic_demonstr_file': '/tmp/temp_not...
+                    │    │                └ {'uploads': {'balanco_file': UploadedFile(file_id='59ab6e5a-b1f2-4479-8fd5-549dd5aedb1b', name='515 - balanço patrimonial 202...
+                    │    └ <function DossieAutomation._render_template at 0x7676c172c720>
+                    └ <core.automation.DossieAutomation object at 0x7676c06a2030>
+
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/app/core/automation.py", line 133, in _render_template
+    doc.render(context)
+    │   │      └ {'nome_empresa': 'Teste', 'data_atual': '29 de Julho de 2026', 'periodo_anual': 'Janeiro a Julho de 2026', 'cnpj_empresa': '1...
+    │   └ <function DocxTemplate.render at 0x7676d8b3ed40>
+    └ <docxtpl.template.DocxTemplate object at 0x7676e8584440>
+
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/venv/lib/python3.13/site-packages/docxtpl/template.py", line 480, in render
+    self.render_init()
+    │    └ <function DocxTemplate.render_init at 0x7676d8b3e200>
+    └ <docxtpl.template.DocxTemplate object at 0x7676e8584440>
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/venv/lib/python3.13/site-packages/docxtpl/template.py", line 60, in render_init
+    self.init_docx()
+    │    └ <function DocxTemplate.init_docx at 0x7676d8b3e160>
+    └ <docxtpl.template.DocxTemplate object at 0x7676e8584440>
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/venv/lib/python3.13/site-packages/docxtpl/template.py", line 56, in init_docx
+    self.docx = Document(self.template_file)
+    │    │      │        │    └ '/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/files/template_base_ofc.docx'
+    │    │      │        └ <docxtpl.template.DocxTemplate object at 0x7676e8584440>
+    │    │      └ <function Document at 0x7676d97ddf80>
+    │    └ None
+    └ <docxtpl.template.DocxTemplate object at 0x7676e8584440>
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/venv/lib/python3.13/site-packages/docx/api.py", line 27, in Document
+    document_part = cast("DocumentPart", Package.open(docx).main_document_part)
+                    │                    │       │    └ '/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/files/template_base_ofc.docx'
+                    │                    │       └ <classmethod(<function OpcPackage.open at 0x7676d8d5eca0>)>
+                    │                    └ <class 'docx.package.Package'>
+                    └ <function cast at 0x7676ebd0cb80>
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/venv/lib/python3.13/site-packages/docx/opc/package.py", line 126, in open
+    pkg_reader = PackageReader.from_file(pkg_file)
+                 │             │         └ '/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/files/template_base_ofc.docx'
+                 │             └ <staticmethod(<function PackageReader.from_file at 0x7676d8d5c4a0>)>
+                 └ <class 'docx.opc.pkgreader.PackageReader'>
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/venv/lib/python3.13/site-packages/docx/opc/pkgreader.py", line 22, in from_file
+    phys_reader = PhysPkgReader(pkg_file)
+                  │             └ '/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/files/template_base_ofc.docx'
+                  └ <class 'docx.opc.phys_pkg.PhysPkgReader'>
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/venv/lib/python3.13/site-packages/docx/opc/phys_pkg.py", line 21, in __new__
+    raise PackageNotFoundError("Package not found at '%s'" % pkg_file)
+          │                                                  └ '/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/files/template_base_ofc.docx'
+          └ <class 'docx.opc.exceptions.PackageNotFoundError'>
+
+docx.opc.exceptions.PackageNotFoundError: Package not found at '/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/files/template_base_ofc.docx'
+2026-07-29 15:35:54.672 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/tmpzshqcngs.pdf' convertido: 2 página(s).
+2026-07-29 15:35:54.780 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/tmpfqf3hb6n.pdf' convertido: 1 página(s).
+2026-07-29 15:35:54.785 | WARNING  | core.file_processor:insert_pdf_at_placeholder:95 - Placeholder '[[DEMONSTR_RESULTADO]]' não encontrado no documento.
+2026-07-29 15:35:54.796 | WARNING  | core.file_processor:insert_docx_at_placeholder:121 - Placeholder '[[EXP_DEMONSTR]]' não encontrado no documento.
+2026-07-29 15:35:54.807 | WARNING  | core.file_processor:insert_docx_at_placeholder:121 - Placeholder '[[CARTA_RESP]]' não encontrado no documento.
+2026-07-29 15:35:54.811 | INFO     | core.automation:generate:89 - Dossiê gerado com sucesso para 'Teste'.
+2026-07-29 15:51:01.705 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/tmpfw2wfa86.pdf' convertido: 2 página(s).
+2026-07-29 15:51:01.948 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/tmph0tqwnb6.pdf' convertido: 1 página(s).
+2026-07-29 15:51:01.953 | INFO     | core.file_processor:insert_pdf_at_placeholder:93 - Placeholder '[[DEMONSTR_RESULTADO]]' substituído por 1 imagem(ns).
+2026-07-29 15:51:01.961 | INFO     | core.file_processor:insert_docx_at_placeholder:118 - Placeholder '[[EXP_DEMONSTR]]' substituído com conteúdo de '/tmp/temp_notas.docx'.
+2026-07-29 15:51:01.971 | INFO     | core.file_processor:insert_docx_at_placeholder:118 - Placeholder '[[CARTA_RESP]]' substituído com conteúdo de '/tmp/temp_carta.docx'.
+2026-07-29 15:51:02.097 | INFO     | core.automation:generate:90 - Dossiê gerado com sucesso para 'Teste'.
+2026-07-29 16:10:04.717 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/tmpak1tcvqv.pdf' convertido: 2 página(s).
+2026-07-29 16:10:04.975 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/tmpab9izd1j.pdf' convertido: 1 página(s).
+2026-07-29 16:10:04.979 | INFO     | core.file_processor:insert_pdf_at_placeholder:93 - Placeholder '[[DEMONSTR_RESULTADO]]' substituído por 1 imagem(ns).
+2026-07-29 16:10:04.988 | INFO     | core.file_processor:insert_docx_at_placeholder:118 - Placeholder '[[EXP_DEMONSTR]]' substituído com conteúdo de '/tmp/temp_notas.docx'.
+2026-07-29 16:10:04.997 | INFO     | core.file_processor:insert_docx_at_placeholder:118 - Placeholder '[[CARTA_RESP]]' substituído com conteúdo de '/tmp/temp_carta.docx'.
+2026-07-29 16:10:05.127 | INFO     | core.automation:generate:90 - Dossiê gerado com sucesso para 'Teste'.

@@ -8,12 +8,14 @@ from io import BytesIO
 from pathlib import Path
 from typing import Optional
 
+import jinja2
 import requests
 from docx import Document
 from docxtpl import DocxTemplate, InlineImage
 from docx.shared import Inches
 
 from core.file_processor import FileProcessor
+from utils.helpers import format_cnpj
 from utils.logger import logger
 from config.constants import (
     MESES_PT,
@@ -39,7 +41,7 @@ class DossieAutomation:
         self._processor = FileProcessor()
 
     # ------------------------------------------------------------------ #
-    # Geração do documento                                                  #
+    # Geração do documento                                               #
     # ------------------------------------------------------------------ #
 
     def generate(self, input_data: dict) -> tuple[Optional[bytes], Optional[str]]:
@@ -59,7 +61,13 @@ class DossieAutomation:
             for key, uploaded_file in input_data["uploads"].items():
                 if uploaded_file is None:
                     return None, f"O arquivo '{key}' é obrigatório."
-                temp_paths[key] = self._processor.save_upload_to_temp(uploaded_file)
+                # O n8n retorna caminhos de arquivo (str) para notas/carta; uploads reais do
+                # Streamlit chegam como UploadedFile e precisam ser salvos em disco.
+                if isinstance(uploaded_file, str):
+                    temp_paths[key] = uploaded_file
+                else:
+                    temp_paths[key] = self._processor.save_upload_to_temp(uploaded_file)
+
 
             # 2. Renderizar template via docxtpl
             rendered_path = self._render_template(input_data, temp_paths)
@@ -100,6 +108,11 @@ class DossieAutomation:
     # Internos                                                              #
     # ------------------------------------------------------------------ #
 
+    # O template .docx foi criado para docxtemplater (JS) e usa tags de chave simples
+    # ("{nome_empresa}"), não a sintaxe Jinja2 padrão do docxtpl ("{{ nome_empresa }}").
+    # Configuramos o próprio Jinja2 para reconhecer chave simples em vez de editar o .docx.
+    _JINJA_ENV = jinja2.Environment(variable_start_string="{", variable_end_string="}")
+
     def _render_template(self, input_data: dict, temp_paths: dict) -> str:
         """Renderiza o template DOCX com os dados e retorna o caminho do arquivo renderizado."""
         doc = DocxTemplate(str(TEMPLATE_PATH))
@@ -112,19 +125,31 @@ class DossieAutomation:
             "nome_empresa": input_data["nome_empresa"],
             "data_atual": self._data_atual_formatada(),
             "periodo_anual": input_data["periodo_anual"],
-            "cnpj_empresa": input_data["cnpj_empresa"],
+            # Aceita o CNPJ tanto já formatado quanto apenas com dígitos: format_cnpj
+            # limpa e reaplica a máscara XX.XXX.XXX/XXXX-XX antes da substituição no
+            # documento, independente de quem chamou generate() (UI ou n8n).
+            "cnpj_empresa": format_cnpj(input_data["cnpj_empresa"]),
             "data_dem_encerradas": input_data["data_dem_encerradas"],
             "razao_social_empresa": input_data["razao_social_empresa"],
             "periodo_em_data": input_data["periodo_em_data"],
             "balanco_patrimonial_pt1": InlineImage(doc, BytesIO(pt1_bytes), width=Inches(IMAGE_WIDTH_INCHES)),
             "balanco_patrimonial_pt2": InlineImage(doc, BytesIO(pt2_bytes), width=Inches(IMAGE_WIDTH_INCHES)),
-            "demontr_resultado": PLACEHOLDER_DRE,
-            "socios": input_data["socios"],
+            "dre_img": PLACEHOLDER_DRE,
+            "socios_assinaturas": self._formatar_socios_assinaturas(input_data["socios"]),
             "explic_demonstr": PLACEHOLDER_NOTAS,
             "carta_responsb": PLACEHOLDER_CARTA,
+            # Resquício do template original em docxtemplater: uma tag ficou como
+            # "{d.periodo_anual}" em vez de "{periodo_anual}". Em vez de editar o .docx
+            # (risco de quebrar runs/formatação no Word), expomos o mesmo valor sob "d".
+            "d": {"periodo_anual": input_data["periodo_anual"]},
         }
 
-        doc.render(context)
+        # autoescape=True é obrigatório aqui: é o que faz o docxtpl reconhecer
+        # RichText/RichTextParagraph/InlineImage e injetar o XML deles corretamente
+        # (sem isso, esses objetos viram texto puro via str() e corrompem o XML do docx).
+        # Também escapa caracteres especiais de XML (&, <, >) em textos livres, o que é
+        # necessário de qualquer forma para o documento final ser um XML válido.
+        doc.render(context, self._JINJA_ENV, autoescape=True)
 
         rendered_path = str(Path(tempfile.gettempdir()) / "temp_rendered.docx")
         doc.save(rendered_path)
@@ -134,6 +159,37 @@ class DossieAutomation:
     def _data_atual_formatada() -> str:
         now = datetime.datetime.now()
         return f"{now.day} de {MESES_PT[now.month]} de {now.year}"
+
+    @staticmethod
+    def _formatar_socios_assinaturas(socios: list[dict]) -> str:
+        """
+        Monta o bloco de assinatura de cada sócio no padrão:
+            _______________________________
+            NOME EM MAIÚSCULO
+            Cargo
+            CPF: xxx.xxx.xxx-xx
+        Retorna uma string simples com quebras de linha reais ("\\n"): o placeholder no
+        template fica sozinho dentro de um único "<w:t>", então qualquer XML de run
+        (como um RichText customizado com "<w:r>"/"<w:br/>") acaba sendo inserido
+        ANINHADO dentro desse "<w:t>" — o que não é um XML válido ("<w:t>" só aceita
+        texto). Isso corrompe o documento e, com mais de um sócio, o LibreOffice/Word
+        chega a descartar os blocos seguintes silenciosamente. Usando "\\n" comum, o
+        próprio docxtpl converte cada um em "</w:t><w:br/><w:t>" no pós-processamento
+        (ver resolve_listing em docxtpl/template.py), que é estruturalmente válido.
+        """
+        socios_validos = [s for s in socios if s.get("nome")]
+        blocos = []
+
+        for socio in socios_validos:
+            linhas = [
+                "_" * 35,
+                socio.get("nome", "").upper(),
+                socio.get("cargo", ""),
+                f"CPF: {socio.get('cpf', '')}",
+            ]
+            blocos.append("\n".join(linhas))
+
+        return "\n\n".join(blocos)
 
     # ------------------------------------------------------------------ #
     # Integração n8n                                                        #

@@ -1,0 +1,98 @@
+2026-07-29 15:48:25.855 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco.pdf' convertido: 2 página(s).
+2026-07-29 15:48:26.131 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco.pdf' convertido: 2 página(s).
+2026-07-29 15:48:26.135 | INFO     | core.file_processor:insert_pdf_at_placeholder:93 - Placeholder '[[DEMONSTR_RESULTADO]]' substituído por 2 imagem(ns).
+2026-07-29 15:48:26.144 | INFO     | core.file_processor:insert_docx_at_placeholder:118 - Placeholder '[[EXP_DEMONSTR]]' substituído com conteúdo de '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/notas.docx'.
+2026-07-29 15:48:26.153 | INFO     | core.file_processor:insert_docx_at_placeholder:118 - Placeholder '[[CARTA_RESP]]' substituído com conteúdo de '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/carta.docx'.
+2026-07-29 15:48:26.264 | INFO     | core.automation:generate:90 - Dossiê gerado com sucesso para 'Teste Empresa'.
+2026-07-29 16:11:57.978 | ERROR    | core.file_processor:pdf_to_images:52 - Erro ao converter PDF '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco.pdf': no such file: '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco.pdf'
+2026-07-29 16:11:57.978 | ERROR    | core.automation:generate:101 - Erro inesperado durante geração do dossiê.
+Traceback (most recent call last):
+
+  File "<string>", line 27, in <module>
+
+> File "/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/app/core/automation.py", line 72, in generate
+    rendered_path = self._render_template(input_data, temp_paths)
+                    │    │                │           └ {'balanco_file': '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratch...
+                    │    │                └ {'nome_empresa': 'Teste Empresa', 'razao_social_empresa': 'Teste Empresa LTDA', 'cnpj_empresa': '36.526.972/0001-25', 'period...
+                    │    └ <function DossieAutomation._render_template at 0x77f7a85f5bc0>
+                    └ <core.automation.DossieAutomation object at 0x77f7aeb36ba0>
+
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/app/core/automation.py", line 119, in _render_template
+    pt1_bytes, pt2_bytes = self._processor.pdf_balanco_duas_paginas(
+                           │    │          └ <function FileProcessor.pdf_balanco_duas_paginas at 0x77f7a85f5800>
+                           │    └ <core.file_processor.FileProcessor object at 0x77f7a8576510>
+                           └ <core.automation.DossieAutomation object at 0x77f7aeb36ba0>
+
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/app/core/file_processor.py", line 66, in pdf_balanco_duas_paginas
+    images = self.pdf_to_images(pdf_path, max_pages=2)
+             │    │             └ '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco....
+             │    └ <function FileProcessor.pdf_to_images at 0x77f7a9bc44a0>
+             └ <core.file_processor.FileProcessor object at 0x77f7a8576510>
+
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/app/core/file_processor.py", line 45, in pdf_to_images
+    doc = fitz.open(pdf_path)
+          │    │    └ '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco....
+          │    └ <class 'pymupdf.Document'>
+          └ <module 'fitz' from '/home/camposs/Desktop/estagio/Dossie_Contabil/venv/lib/python3.13/site-packages/fitz/__init__.py'>
+
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/venv/lib/python3.13/site-packages/pymupdf/__init__.py", line 3001, in __init__
+    raise FileNotFoundError(f"no such file: '{filename}'")
+          │                                   └ '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco....
+          └ <class 'pymupdf.FileNotFoundError'>
+
+pymupdf.FileNotFoundError: no such file: '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco.pdf'
+2026-07-29 16:12:21.942 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco.pdf' convertido: 2 página(s).
+2026-07-29 16:12:22.220 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco.pdf' convertido: 2 página(s).
+2026-07-29 16:12:22.224 | INFO     | core.file_processor:insert_pdf_at_placeholder:93 - Placeholder '[[DEMONSTR_RESULTADO]]' substituído por 2 imagem(ns).
+2026-07-29 16:12:22.232 | INFO     | core.file_processor:insert_docx_at_placeholder:118 - Placeholder '[[EXP_DEMONSTR]]' substituído com conteúdo de '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/notas.docx'.
+2026-07-29 16:12:22.240 | INFO     | core.file_processor:insert_docx_at_placeholder:118 - Placeholder '[[CARTA_RESP]]' substituído com conteúdo de '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/carta.docx'.
+2026-07-29 16:12:22.351 | INFO     | core.automation:generate:90 - Dossiê gerado com sucesso para 'Teste Empresa'.
+2026-07-29 16:14:10.931 | ERROR    | core.file_processor:pdf_to_images:52 - Erro ao converter PDF '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco.pdf': no such file: '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco.pdf'
+2026-07-29 16:14:10.931 | ERROR    | core.automation:generate:101 - Erro inesperado durante geração do dossiê.
+Traceback (most recent call last):
+
+  File "<string>", line 29, in <module>
+
+> File "/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/app/core/automation.py", line 72, in generate
+    rendered_path = self._render_template(input_data, temp_paths)
+                    │    │                │           └ {'balanco_file': '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratch...
+                    │    │                └ {'nome_empresa': 'Teste Empresa', 'razao_social_empresa': 'Teste Empresa LTDA', 'cnpj_empresa': '36.526.972/0001-25', 'period...
+                    │    └ <function DossieAutomation._render_template at 0x72f530df1c60>
+                    └ <core.automation.DossieAutomation object at 0x72f5372dee40>
+
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/app/core/automation.py", line 119, in _render_template
+    pt1_bytes, pt2_bytes = self._processor.pdf_balanco_duas_paginas(
+                           │    │          └ <function FileProcessor.pdf_balanco_duas_paginas at 0x72f530df18a0>
+                           │    └ <core.file_processor.FileProcessor object at 0x72f530d76510>
+                           └ <core.automation.DossieAutomation object at 0x72f5372dee40>
+
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/app/core/file_processor.py", line 66, in pdf_balanco_duas_paginas
+    images = self.pdf_to_images(pdf_path, max_pages=2)
+             │    │             └ '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco....
+             │    └ <function FileProcessor.pdf_to_images at 0x72f5321c4540>
+             └ <core.file_processor.FileProcessor object at 0x72f530d76510>
+
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/outputs/Automatizar_Dossie/app/core/file_processor.py", line 45, in pdf_to_images
+    doc = fitz.open(pdf_path)
+          │    │    └ '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco....
+          │    └ <class 'pymupdf.Document'>
+          └ <module 'fitz' from '/home/camposs/Desktop/estagio/Dossie_Contabil/venv/lib/python3.13/site-packages/fitz/__init__.py'>
+
+  File "/home/camposs/Desktop/estagio/Dossie_Contabil/venv/lib/python3.13/site-packages/pymupdf/__init__.py", line 3001, in __init__
+    raise FileNotFoundError(f"no such file: '{filename}'")
+          │                                   └ '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco....
+          └ <class 'pymupdf.FileNotFoundError'>
+
+pymupdf.FileNotFoundError: no such file: '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco.pdf'
+2026-07-29 16:14:25.240 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco.pdf' convertido: 2 página(s).
+2026-07-29 16:14:25.510 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco.pdf' convertido: 2 página(s).
+2026-07-29 16:14:25.513 | INFO     | core.file_processor:insert_pdf_at_placeholder:93 - Placeholder '[[DEMONSTR_RESULTADO]]' substituído por 2 imagem(ns).
+2026-07-29 16:14:25.520 | INFO     | core.file_processor:insert_docx_at_placeholder:118 - Placeholder '[[EXP_DEMONSTR]]' substituído com conteúdo de '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/notas.docx'.
+2026-07-29 16:14:25.528 | INFO     | core.file_processor:insert_docx_at_placeholder:118 - Placeholder '[[CARTA_RESP]]' substituído com conteúdo de '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/carta.docx'.
+2026-07-29 16:14:25.642 | INFO     | core.automation:generate:90 - Dossiê gerado com sucesso para 'Teste Empresa'.
+2026-07-29 16:16:38.903 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco.pdf' convertido: 2 página(s).
+2026-07-29 16:16:39.204 | DEBUG    | core.file_processor:pdf_to_images:50 - PDF '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/fake_balanco.pdf' convertido: 2 página(s).
+2026-07-29 16:16:39.208 | INFO     | core.file_processor:insert_pdf_at_placeholder:93 - Placeholder '[[DEMONSTR_RESULTADO]]' substituído por 2 imagem(ns).
+2026-07-29 16:16:39.216 | INFO     | core.file_processor:insert_docx_at_placeholder:118 - Placeholder '[[EXP_DEMONSTR]]' substituído com conteúdo de '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/notas.docx'.
+2026-07-29 16:16:39.224 | INFO     | core.file_processor:insert_docx_at_placeholder:118 - Placeholder '[[CARTA_RESP]]' substituído com conteúdo de '/tmp/claude-1000/-home-camposs-Desktop-estagio-Dossie-Contabil/9ba4cc22-cd25-4610-81e8-e9fcce489575/scratchpad/carta.docx'.
+2026-07-29 16:16:39.335 | INFO     | core.automation:generate:90 - Dossiê gerado com sucesso para 'Teste Empresa'.
