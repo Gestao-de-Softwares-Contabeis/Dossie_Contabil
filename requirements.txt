@@ -1,0 +1,4 @@
+# Streamlit Community Cloud só procura requirements.txt na raiz do repo
+# ou na mesma pasta do arquivo de entrada do app. Este arquivo delega para
+# a lista real de dependências, mantida em outputs/Automatizar_Dossie/requirements.txt.
+-r outputs/Automatizar_Dossie/requirements.txt
